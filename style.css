@@ -1,0 +1,178 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent; /* Mobile touch highlight remove karne ke liye */
+}
+
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(to bottom, #ffdde1, #ee9ca7);
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Screen Management */
+.screen {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* STAGE 1: Gift Box Styling & Animation */
+.gift-container {
+    cursor: pointer;
+}
+
+.gift-box {
+    font-size: 120px;
+    animation: wobble 0.8s infinite alternate ease-in-out;
+    display: inline-block;
+}
+
+@keyframes wobble {
+    0% { transform: rotate(-8deg) scale(1); }
+    100% { transform: rotate(8deg) scale(1.1); }
+}
+
+.tap-text {
+    color: #fff;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    margin-top: 20px;
+}
+
+/* STAGE 2: Cake & Candle Styling */
+.birthday-title {
+    color: #ff4757;
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px #fff;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-10px); }
+}
+
+.cake-container {
+    position: relative;
+    width: 200px;
+    margin-top: 50px;
+}
+
+.cake-tier {
+    background: #ff7675;
+    border-radius: 10px 10px 0 0;
+    border: 4px solid #fff;
+    margin: 0 auto;
+}
+
+.tier-bottom {
+    width: 200px;
+    height: 80px;
+    background: #ff7675;
+}
+
+.tier-top {
+    width: 140px;
+    height: 60px;
+    background: #fdcb6e;
+}
+
+.candles-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: -5px;
+}
+
+.candle {
+    width: 12px;
+    height: 40px;
+    background: linear-gradient(to right, #74b9ff, #0984e3);
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+}
+
+.flame {
+    width: 14px;
+    height: 20px;
+    background: #e17055;
+    border-radius: 50% 50% 20% 20%;
+    position: absolute;
+    top: -20px;
+    left: -1px;
+    box-shadow: 0 0 10px #ff7675;
+    animation: flicker 0.1s infinite alternate;
+}
+
+@keyframes flicker {
+    0% { transform: scale(1) rotate(-2deg); }
+    100% { transform: scale(1.1) rotate(2deg); }
+}
+
+.instruction-text {
+    font-size: 20px;
+    color: #fff;
+    margin-top: 20px;
+}
+
+/* STAGE 3: Balloon Game & Photo Frame */
+.game-header {
+    position: absolute;
+    top: 20px;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.baby-frame-container {
+    z-index: 10;
+    margin-top: 40px;
+}
+
+.baby-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 8px solid white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.baby-jump {
+    animation: photoJump 0.4s ease;
+}
+
+@keyframes photoJump {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(5deg); }
+}
+
+/* Floating Balloons */
+.balloon {
+    position: absolute;
+    bottom: -100px;
+    width: 60px;
+    height: 75px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    cursor: pointer;
+    animation: floatUp 4s linear infinite;
+}
+
+@keyframes floatUp {
+    0% { bottom: -100px; transform: translateX(0); }
+    50% { transform: translateX(30px); }
+    100% { bottom: 105vh; transform: translateX(-30px); }
+      }
