@@ -3,102 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday! 🎉</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to bottom, #ffdde1, #ee9ca7);
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-
-        /* Gift Box Animation */
-        .gift-container {
-            cursor: pointer;
-            animation: wobble 1s infinite alternate;
-        }
-
-        @keyframes wobble {
-            0% { transform: rotate(-5deg); }
-            100% { transform: rotate(5deg); }
-        }
-
-        .gift-box {
-            font-size: 100px;
-        }
-
-        /* Surprise Message */
-        .hidden-surprise {
-            display: none;
-            scale: 0;
-            transition: all 0.5s ease;
-        }
-
-        .show {
-            display: block;
-            scale: 1;
-            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.3); }
-            100% { transform: scale(1); }
-        }
-
-        h1 {
-            color: #ff4757;
-            font-size: 3rem;
-            text-shadow: 2px 2px #fff;
-        }
-
-        .baby-photo {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 5px solid white;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
-        }
-    </style>
+    <title>Happy Birthday Princess! 🎉</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Stage 1: Gift Box -->
-    <div class="gift-container" id="giftSection" onclick="revealSurprise()">
-        <div class="gift-box">🎁</div>
-        <h2 style="color: #fff; text-shadow: 1px 1px 5px rgba(0,0,0,0.2);">Tap the Gift!</h2>
+    <div class="screen active" id="stage1">
+        <div class="gift-container" onclick="openGift()">
+            <div class="gift-box">🎁</div>
+            <h2 class="tap-text">Tap the Magic Gift! ✨</h2>
+        </div>
     </div>
 
-    <!-- Stage 2: The Surprise (Will show after click) -->
-    <div class="hidden-surprise" id="surpriseSection">
-        <!-- Add Baby Image Here -->
-        <img src="https://via.placeholder.com/200" alt="Birthday Girl" class="baby-photo">
-        <h1>🎉 Happy Birthday Princess! 🎂</h1>
-        <p style="font-size: 1.5rem; color: #fff;">Click anywhere to pop balloons!</p>
+    <div class="screen" id="stage2">
+        <h1 class="birthday-title">🎉 Happy Birthday Princess! 🎉</h1>
+        
+        <div class="cake-container">
+            <div class="candles-row">
+                <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
+                <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
+                <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
+                <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
+            </div>
+            <div class="cake-tier tier-top"></div>
+            <div class="cake-tier tier-bottom"></div>
+        </div>
+        
+        <p class="instruction-text">Touch the candles to blow them out! 🎂</p>
     </div>
 
-    <!-- Audio Elements for effects -->
-    <audio id="magicSound" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav"></audio>
+    <div class="screen" id="stage3">
+        <div class="game-header">
+            <h2>🎈 Pop the Balloons! 🎈</h2>
+            <p>Score: <span id="score">0</span></p>
+        </div>
+        
+        <div class="baby-frame-container">
+            <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400" alt="Birthday Girl" class="baby-photo" id="babyPhoto">
+        </div>
 
-    <script>
-        function revealSurprise() {
-            // Play Sound
-            document.getElementById('magicSound').play();
-            
-            // Hide Gift
-            document.getElementById('giftSection').style.display = 'none';
-            
-            // Show Surprise
-            document.getElementById('surpriseSection').classList.add('show');
-            
-            // Start Balloon Game Feature trigger details can go here
-        }
-    </script>
+        <div id="balloon-container"></div>
+    </div>
+
+    <audio id="magicSound" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
+    <audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2573/2573-84.wav" preload="auto"></audio>
+    <audio id="birthdayMusic" src="https://actions.google.com/sounds/v1/celebrations/birthday_horn.ogg" preload="auto"></audio>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
