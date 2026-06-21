@@ -1,95 +1,171 @@
-// Sound variables
-const magicSound = document.getElementById('magicSound');
-const popSound = document.getElementById('popSound');
-const birthdayMusic = document.getElementById('birthdayMusic');
+// --- AUDIO SYNTH ENGINE (UNBLOCKABLE HARDWARE SFX) ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-let blownCandlesCount = 0;
-let score = 0;
-let balloonInterval;
-
-// STAGE 1 -> STAGE 2 (Gift open karne par)
-function openGift() {
-    magicSound.play();
+function playSynthSound(type) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     
-    // Screen transition animation delay ke sath
-    document.getElementById('stage1').classList.remove('active');
-    document.getElementById('stage2').classList.add('active');
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (type === 'magic') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.5); 
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+    } 
+    else if (type === 'pop') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+    } 
+    else if (type === 'meow') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+        osc.frequency.quadraticRampToValueAtTime(880, audioCtx.currentTime + 0.12);
+        osc.frequency.quadraticRampToValueAtTime(720, audioCtx.currentTime + 0.28);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.28);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.28);
+    } 
+    else if (type === 'nom') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(320, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.18);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.18);
+    }
 }
 
-// STAGE 2: Candle blow logic
-function blowCandle(candleElement) {
-    const flame = candleElement.querySelector('.flame');
+// --- FAIRY DUST POINTER INTERACTION ---
+window.addEventListener('pointermove', (e) => {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'magic-sparkle';
+    sparkle.style.left = e.pageX + 'px';
+    sparkle.style.top = e.pageY + 'px';
     
-    // Agar flame pehle se bujhi nahi hai to
-    if (flame.style.display !== 'none') {
-        flame.style.display = 'none'; // Candle bujh gayi
-        popSound.currentTime = 0;
-        popSound.play(); // Puff/Pop sound
+    const mx = (Math.random() - 0.5) * 120 + 'px';
+    const my = (Math.random() - 0.5) * 120 + 'px';
+    sparkle.style.setProperty('--mx', mx);
+    sparkle.style.setProperty('--my', my);
+    
+    document.body.appendChild(sparkle);
+    setTimeout(() => sparkle.remove(), 800);
+});
+
+// --- ZONE 1: UNWRAP REVEAL ---
+function unwrapMagic(box) {
+    playSynthSound('magic');
+    playSynthSound('meow');
+    box.style.transform = 'scale(0) rotate(720deg)';
+    box.style.transition = 'all 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
+    
+    setTimeout(() => {
+        box.style.display = 'none';
+        document.getElementById('titleName').classList.add('reveal');
+        document.getElementById('scroller').style.display = 'flex';
+        // Burst initial foil balloons
+        for(let i=0; i<12; i++) { createFoilBalloon(true); }
+    }, 550);
+}
+
+// --- ZONE 2: CANDLES & BEAR FEEDING GAME ---
+let blownCandlesCount = 0;
+function extinguishCandle(candle) {
+    const flame = candle.querySelector('.flame-real');
+    if (flame && flame.style.display !== 'none') {
+        flame.style.display = 'none';
+        playSynthSound('pop');
         blownCandlesCount++;
         
-        // Agar saari 4 candles bujh gayi hain
         if (blownCandlesCount === 4) {
-            setTimeout(() => {
-                birthdayMusic.play();
-                goToBalloonGame();
-            }, 600);
+            document.getElementById('mainBear').classList.add('bear-clapping');
+            document.getElementById('cakeSlice').style.display = 'block';
+            // Start spontaneous balloon loop for Zone 3
+            setInterval(createFoilBalloon, 900);
         }
     }
 }
 
-// STAGE 2 -> STAGE 3 (Balloon Game Start)
-function goToBalloonGame() {
-    document.getElementById('stage2').classList.remove('active');
-    document.getElementById('stage3').classList.add('active');
-    
-    // Har 800ms mein naye balloons screen par aayenge
-    balloonInterval = setInterval(createBalloon, 800);
-}
+// Mobile and Tablet Touch Drag-and-Drop Implementation
+const cakeSlice = document.getElementById('cakeSlice');
+const mainBear = document.getElementById('mainBear');
 
-// STAGE 3: Random Balloons Creator
-function createBalloon() {
-    const container = document.getElementById('balloon-container');
-    if (!container) return;
+cakeSlice.addEventListener('touchmove', (e) => {
+    const touch = e.targetTouches[0];
+    cakeSlice.style.position = 'absolute';
+    cakeSlice.style.left = touch.pageX - 30 + 'px';
+    cakeSlice.style.top = touch.pageY - 30 + 'px';
+    
+    // Collision detection with 3D Bear bounding box
+    const bearRect = mainBear.getBoundingClientRect();
+    if(touch.clientX > bearRect.left && touch.clientX < bearRect.right &&
+       touch.clientY > bearRect.top && touch.clientY < bearRect.bottom) {
+        if(cakeSlice.style.display !== 'none') {
+            cakeSlice.style.display = 'none';
+            playSynthSound('nom');
+            mainBear.style.transform = 'scale(1.4) rotate(360deg)';
+            mainBear.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            setTimeout(() => {
+                mainBear.style.transform = 'scale(1) rotate(0deg)';
+            }, 1000);
+        }
+    }
+});
+
+// --- ZONE 3: 3D BALLOON GENERATOR ENGINE ---
+const balloonColors = ['#ff4757', '#ff6b81', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6', '#ff4081'];
+function createFoilBalloon(isBurstMode = false) {
+    const yard = document.getElementById('balloon-yard');
+    if (!yard) return;
 
     const balloon = document.createElement('div');
-    balloon.className = 'balloon';
+    balloon.className = 'balloon-3d';
+    balloon.style.backgroundColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+    balloon.style.left = Math.random() * 82 + 'vw';
     
-    // Random Colors bacho ke pasand ke
-    const colors = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6', '#ff6b81'];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    balloon.style.backgroundColor = randomColor;
+    const speed = isBurstMode ? (2 + Math.random() * 2) : (4 + Math.random() * 3);
+    balloon.style.setProperty('--speed', speed + 's');
     
-    // Random horizontal position
-    const randomX = Math.random() * (window.innerWidth - 80);
-    balloon.style.left = `${randomX}px`;
-    
-    // Random speed taaki bacha aaram se touch kar sake
-    const randomDuration = 3 + Math.random() * 3; 
-    balloon.style.animationDuration = `${randomDuration}s`;
-    
-    // Balloon par click/tap karne ka event
-    balloon.addEventListener('click', () => {
-        popSound.currentTime = 0;
-        popSound.play(); // Pop sound effect
+    if(isBurstMode) {
+        balloon.style.bottom = Math.random() * 40 + 'vh';
+    }
+
+    // Interactive Tap Pop
+    balloon.addEventListener('pointerdown', () => {
+        playSynthSound('pop');
         
-        // Score update
-        score++;
-        document.getElementById('score').innerText = score;
+        // Spin Rabbit animation trigger
+        const rabbit = document.getElementById('mainRabbit');
+        rabbit.classList.add('rabbit-spin');
+        setTimeout(() => rabbit.classList.remove('rabbit-spin'), 500);
         
-        // Baby photo jump animation jab bacha balloon phodega
-        const baby = document.getElementById('babyPhoto');
-        baby.classList.add('baby-jump');
-        setTimeout(() => baby.classList.remove('baby-jump'), 400);
-        
-        balloon.remove(); // Screen se balloon hatao
+        balloon.remove();
     });
-    
-    container.appendChild(balloon);
-    
-    // Agar balloon upar nikal jaye bina pop huye to memory se delete karo
-    setTimeout(() => {
-        if(balloon.parentNode) {
-            balloon.remove();
-        }
-    }, randomDuration * 1000);
+
+    yard.appendChild(balloon);
+    setTimeout(() => { if(balloon.parentNode) balloon.remove(); }, speed * 1000);
 }
+
+// --- ZONE 4: LOVE SHOWER SHOWER ---
+const loveEmojis = ['💖', '💝', '🐰', '🧸', '🐱', '🌟', '🌈'];
+function triggerLoveShower() {
+    playSynthSound('magic');
+    for(let i=0; i<35; i++) {
+        setTimeout(() => {
+            const emoji = document.createElement('div');
+            emoji.className = 'falling-emoji';
+            emoji.innerText = loveEmojis[Math.floor(Math.random() * loveEmojis.length)];
+            emoji.style.left = Math.random() * 92 + 'vw';
+            document.body.appendChild(emoji);
+            setTimeout(() => emoji.remove(), 2500);
+        }, i * 50);
+    }
+                                                             }
