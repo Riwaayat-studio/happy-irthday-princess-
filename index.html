@@ -2,52 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Princess! 🎉</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Magical Birthday Kingdom! ✨</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="screen active" id="stage1">
-        <div class="gift-container" onclick="openGift()">
-            <div class="gift-box">🎁</div>
-            <h2 class="tap-text">Tap the Magic Gift! ✨</h2>
-        </div>
-    </div>
-
-    <div class="screen" id="stage2">
-        <h1 class="birthday-title">🎉 Happy Birthday Princess! 🎉</h1>
-        
-        <div class="cake-container">
-            <div class="candles-row">
-                <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
-                <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
-                <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
-                <div class="candle" onclick="blowCandle(this)"><div class="flame"></div></div>
+    <div class="zone" id="zone1">
+        <div class="character-wrapper cat-3d-box">
+            <div class="cat-head">
+                <div class="cat-ear left"></div>
+                <div class="cat-ear right"></div>
+                <div class="cat-eye left"><div class="pupil"></div></div>
+                <div class="cat-eye right"><div class="pupil"></div></div>
+                <div class="cat-snout"></div>
             </div>
-            <div class="cake-tier tier-top"></div>
-            <div class="cake-tier tier-bottom"></div>
         </div>
+        <div class="gift-box-3d" onclick="unwrapMagic(this)">🎁</div>
+        <h1 class="main-title" id="titleName">HAPPY BIRTHDAY<br><span class="princess-text">PRINCESS!</span></h1>
         
-        <p class="instruction-text">Touch the candles to blow them out! 🎂</p>
+        <div class="scroll-helper" id="scroller">
+            <span>Scroll Down Room ✨</span>
+            <span class="arrow-bounce">👇</span>
+        </div>
     </div>
 
-    <div class="screen" id="stage3">
-        <div class="game-header">
-            <h2>🎈 Pop the Balloons! 🎈</h2>
-            <p>Score: <span id="score">0</span></p>
-        </div>
+    <div class="zone" id="zone2">
+        <h2 class="zone-title pink-glow">Blow Candles & Feed Bear!</h2>
         
-        <div class="baby-frame-container">
-            <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400" alt="Birthday Girl" class="baby-photo" id="babyPhoto">
+        <div class="cake-wrapper">
+            <div class="bear-3d-box" id="mainBear">
+                <div class="bear-ear left"></div>
+                <div class="bear-ear right"></div>
+                <div class="bear-head">
+                    <div class="bear-eye left"></div>
+                    <div class="bear-eye right"></div>
+                    <div class="bear-muzzle"></div>
+                </div>
+                <div class="bear-body"></div>
+            </div>
+
+            <div class="cake-3d">
+                <div class="candles-box">
+                    <div class="candle-3d" onclick="extinguishCandle(this)"><div class="flame-real"></div></div>
+                    <div class="candle-3d" onclick="extinguishCandle(this)"><div class="flame-real"></div></div>
+                    <div class="candle-3d" onclick="extinguishCandle(this)"><div class="flame-real"></div></div>
+                    <div class="candle-3d" onclick="extinguishCandle(this)"><div class="flame-real"></div></div>
+                </div>
+                <div class="cake-tier t-top"></div>
+                <div class="cake-tier t-middle"></div>
+                <div class="cake-tier t-bottom"></div>
+            </div>
         </div>
 
-        <div id="balloon-container"></div>
+        <div class="cake-slice-draggable" id="cakeSlice" draggable="true">🍰</div>
     </div>
 
-    <audio id="magicSound" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
-    <audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2573/2573-84.wav" preload="auto"></audio>
-    <audio id="birthdayMusic" src="https://actions.google.com/sounds/v1/celebrations/birthday_horn.ogg" preload="auto"></audio>
+    <div class="zone" id="zone3">
+        <div class="rabbit-3d-box" id="mainRabbit">
+            <div class="rabbit-ear left"></div>
+            <div class="rabbit-ear right"></div>
+            <div class="rabbit-head">
+                <div class="rabbit-eye left"></div>
+                <div class="rabbit-eye right"></div>
+                <div class="rabbit-nose"></div>
+            </div>
+            <div class="rabbit-body"></div>
+        </div>
+
+        <h2 class="zone-title blue-glow">Pop the 3D Balloons! 🎈</h2>
+        <div id="balloon-yard"></div>
+    </div>
+
+    <div class="zone" id="zone4">
+        <h2 class="zone-title gold-glow">Our Little Princess ✨</h2>
+        
+        <div class="gallery-container">
+            <div class="polaroid-frame"><img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400" alt="Cute Kid"></div>
+            <div class="polaroid-frame"><img src="https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=400" alt="Princess"></div>
+            <div class="polaroid-frame"><img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=400" alt="Smile"></div>
+        </div>
+
+        <div class="final-heart-btn" onclick="triggerLoveShower()">💖</div>
+    </div>
 
     <script src="script.js"></script>
 </body>
